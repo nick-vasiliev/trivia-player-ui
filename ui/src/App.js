@@ -7,7 +7,7 @@ async function getQuestion() {
   console.log(response);
 };
 
-const socket = new WebSocket("ws://localhost:8765")
+const socket = new WebSocket("ws://192.168.0.13:8765")
 socket.addEventListener("open", event => {
   socket.send("Connection established")
 });
