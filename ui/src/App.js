@@ -20,7 +20,7 @@ socket.addEventListener("message", event => {
 function App() {
   const q_choices = [
     {id:0,text:"AAAAA"},
-    {id:1,text:"CCCCCA"},
+    {id:1,text:"CCCCC"},
     {id:2,text:"BBBBA"},
     {id:3,text:"DDDD"},
     {id:4,text:"JJKASA"}

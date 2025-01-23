@@ -1,6 +1,17 @@
 .App {
   text-align: center;
+  background-color: rgb(13, 102, 25);
 }
 .answerButton{
-  background-color:"red"
+  font-size:auto;
+  font-weight: bolder;
+  color: beige;
+  background-color: forestgreen;
+
+  border-radius: 10px;
+  border-color: rgb(3, 66, 3);
+  border-width: 3px;
+
+  width: 200px;
+  height: 50px;
 }
