@@ -7,7 +7,6 @@ async function getQuestion() {
   console.log(response);
 };
 
-
 const socket = new WebSocket("ws://localhost:8765")
 socket.addEventListener("open", event => {
   socket.send("Connection established")
@@ -16,6 +15,10 @@ socket.addEventListener("open", event => {
 socket.addEventListener("message", event => {
   console.log("Message from server ", event.data)
 });
+
+function sendChoice(id) {
+  socket.send(id.toString());
+}
 
 function App() {
   const q_choices = [
@@ -27,7 +30,7 @@ function App() {
   ]
   return (
     <div className="App">
-      <ChoiceLayout key={q_choices.id} choices={q_choices} question="What does the fox say?" />
+      <ChoiceLayout choices={q_choices} question="What does the fox say?" buttonClick={sendChoice} />
     </div>
   );
 }
