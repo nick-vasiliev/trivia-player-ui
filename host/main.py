@@ -10,7 +10,6 @@ async def echo(websocket):
 
 async def main():
     async with serve(echo, "0.0.0.0", 8765) as server:
-        print(server.sockets)
         await server.serve_forever()
 
 
