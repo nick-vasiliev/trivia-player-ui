@@ -1,4 +1,5 @@
 import './App.css';
+import { Question } from './components/Question.js';
 
 async function getQuestion() {
   const q = await fetch('http://localhost:9002/question');
@@ -20,9 +21,14 @@ function sendChoice(id) {
 }
 
 function App() {
+  const choices = [
+      {"id": 0,"text":"aaaaa"},
+      {"id": 1,"text":"BBbaa"}
+    ]
+  ;
   return (
     <div className="App">
-      <p>Hi</p>
+      <Question question="What is the meaning?" choices={choices}/>
     </div>
   );
 }
