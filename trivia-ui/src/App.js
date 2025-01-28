@@ -1,23 +1,28 @@
-import logo from './logo.svg';
 import './App.css';
+
+async function getQuestion() {
+  const q = await fetch('http://localhost:9002/question');
+  const response = q.json();
+  console.log(response);
+};
+
+const socket = new WebSocket("ws://192.168.0.13:8765")
+socket.addEventListener("open", event => {
+  socket.send("Connection established")
+});
+// Listen for messages
+socket.addEventListener("message", event => {
+  console.log("Message from server ", event.data)
+});
+
+function sendChoice(id) {
+  socket.send(id.toString());
+}
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <p>Hi</p>
     </div>
   );
 }
