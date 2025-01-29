@@ -22,15 +22,22 @@ function sendChoice(id) {
 }
 
 function App() {
-  const choices = [
-      {"id": 0,"text":"aaaaa"},
-      {"id": 1,"text":"BBbaa"}
-    ]
-  ;
+  const delivery = {
+    "initialTime": 10, // initial time to answer the question
+    "question": {
+      "text":"What is love?", // question text, the question to be answered
+      "choices": [
+          {"id":0,"text":"Baby don't hurt me"},
+          {"id":1,"text":"Don't hurt me"},
+          {"id":2,"text":"No more"}
+      ]
+    }
+  };
+
   return (
     <div className="App">
-      <Question question="What is the meaning?" choices={choices}/>
       <Timer initialTime={10} />
+      <Question question={delivery.question}/>
     </div>
   );
 }
