@@ -1,5 +1,6 @@
 import './App.css';
 import { Question } from './components/Question.js';
+import { Timer } from './components/Timer.js';
 
 async function getQuestion() {
   const q = await fetch('http://localhost:9002/question');
@@ -29,6 +30,7 @@ function App() {
   return (
     <div className="App">
       <Question question="What is the meaning?" choices={choices}/>
+      <Timer initialTime={10} />
     </div>
   );
 }
