@@ -31,3 +31,10 @@ This is a project I'm doing in my freetime to learn React and AWS (intent is to 
 
 ## universal-remote
 A driver application that allows sending data to *host*, used for debugging and testing.
+
+## What is used
+**Typescript**: https://react.dev/learn/typescript, https://www.w3schools.com/typescript/typescript_getstarted.php
+
+**React**
+
+**Python**

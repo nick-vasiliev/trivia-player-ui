@@ -11,8 +11,6 @@ async def handle_conn(websocket):
             print(f"PLAYER: {message}")
 
         await websocket.send(message)
-        print(message)
-
 
 async def main():
     async with serve(handle_conn, "0.0.0.0", 8765) as server:
