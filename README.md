@@ -28,3 +28,6 @@ The controller for *trivia-ui* and *ui* that performs the logic to host the game
 
 ## Other notes
 This is a project I'm doing in my freetime to learn React and AWS (intent is to host this with ECS).
+
+## universal-remote
+A driver application that allows sending data to *host*, used for debugging and testing.
