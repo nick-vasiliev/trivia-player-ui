@@ -33,8 +33,16 @@ This is a project I'm doing in my freetime to learn React and AWS (intent is to 
 A driver application that allows sending data to *host*, used for debugging and testing.
 
 ## What is used
-**Typescript**: https://react.dev/learn/typescript, https://www.w3schools.com/typescript/typescript_getstarted.php
+### Typescript
+https://react.dev/learn/typescript, 
 
-**React**
+https://www.w3schools.com/typescript/typescript_getstarted.php
 
-**Python**
+### React
+
+### Python
+Styleguide: https://google.github.io/styleguide/pyguide.html,
+
+json library: https://docs.python.org/3/library/json.html
+
+websockets library: https://websockets.readthedocs.io/en/stable/reference/asyncio/server.html

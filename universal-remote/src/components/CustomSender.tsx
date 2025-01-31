@@ -2,7 +2,7 @@ import { useRef } from "react";
 
 export function CustomSender({send}: (text: string) => void) {
 
-  const textRef = useRef(null);
+  const textRef = useRef("");
 
   return (
       <div className="CustomSender">
