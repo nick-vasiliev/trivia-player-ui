@@ -1,5 +1,6 @@
 import asyncio
 from websockets.asyncio.server import serve
+import json
 
 class Player:
     def __init__(self, name):
@@ -15,15 +16,14 @@ class Game:
         self.code = "NICK"
         self.players = []
 
-async def handle_conn(websocket):
+async def handle_conn(websocket): # TODO: authentication - certificates? to authenticate different connections. For now, assume trust
     async for message in websocket:
-        # TODO: authentication - certificates? to authenticate different connections. For now, assume trust
-        if message.startswith("SCREEN"):
-            print(f"SCREEN: {message[6:]}")
-            return
-        # Player
-        print(message)
-
+        try:
+            message_dict = json.loads(message)
+            print(message_dict)
+        except ValueError:
+            print("Error decoding json")
+            continue
         await websocket.send(message)
 
 async def main():
