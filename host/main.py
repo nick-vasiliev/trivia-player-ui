@@ -1,6 +1,7 @@
 import asyncio
 from websockets.asyncio.server import serve
 import json
+from game import Game
     
 game = Game()
 
