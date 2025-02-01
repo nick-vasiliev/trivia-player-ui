@@ -102,7 +102,29 @@ class Game:
         """Check if the room code is valid for this Game.
         Args:
             check_code (str): Game code to check.
+
         Returns:
             bool: Do the codes match?
         """
         return check_code == self.code
+
+    def handle_message(self, message: dict) -> str:
+        """Handle and process a message from a client.
+
+        Args:
+            message (dict): decoded json of message.
+        
+        Returns:
+            string: Response to send client.
+        """
+        if not self.check_code(message['code']):
+            return {"response":"Invalid Code"}
+        action = message['action']
+        if action == "check code":
+            print("good code")
+            return {"response":"Valid Code"}
+        if action == 'join':
+            print(self.join(message['parameters']['name']))
+            print( self.players )
+            return
+        print("unidentified")
