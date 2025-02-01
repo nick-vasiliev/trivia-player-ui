@@ -2,3 +2,5 @@
 **/node_modules
 tests-examples
 tests-examples/*
+__pycache__/*
+__pycache__
