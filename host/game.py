@@ -39,15 +39,8 @@ class Player:
             bool: True if they share name
         """
         if isinstance(other, Player):
-            return self.get_name() == other.get_name()
+            return self.name == other.name
         return False
-    
-    def get_name(self):
-        """Get player's name
-        
-        Returns (str): self.name
-        """
-        return self.name
     
 class Question:
     """Given to a player to provide an answer.
@@ -70,14 +63,6 @@ class Question:
         self.handler = handler 
         self.params = params
         self.answers = {}
-
-    def get_id(self):
-        """Return id.
-        
-        Returns:
-            (int): self.id
-        """
-        return self.id
     
     def add_answer(self, answer: dict, player: str) -> None:
         """Add an answer to be marked. 
@@ -115,7 +100,7 @@ class Game:
         self.question = None
     
     def find_player(self, name: str) -> Player:
-        """Get player with this name if they exist.
+        """Get Player with this name if they exist.
 
         Args:
             name (str): Player name to check.
@@ -177,7 +162,7 @@ class Game:
         Returns:
             bool: Was adding the answer a success?
         """
-        if self.question.get_id != message['parameters']["question_id"]:
+        if self.question.id != message['parameters']["question_id"]:
             return False
         self.question.add_answer( message['parameters'],message['name'])
         print( self.question.answers ) # TODO: rm debug print
