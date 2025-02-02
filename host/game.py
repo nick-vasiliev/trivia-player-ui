@@ -98,11 +98,19 @@ class Game:
         code (str): Identifier for the room.
         players (Player[]): Player(s) in the game.
         question (Question): Current question being played.
+        screen_id (UUID): ws_id of the screen displaying questions.
     """
-    def __init__(self):
-        """Initialize a Game"""
+    def __init__(self, code: str, screen_id: UUID):
+        """Initialize a Game.
+        
+        Args:
+            code (str): code for the game.
+            screen_id (UUID): ws_id of the screen.
+        """
+        self.code = code 
+        self.screen_id = screen_id
+
         self.in_progress = False
-        self.code = "NICK"
         self.players = []
         self.question = None
     
@@ -174,6 +182,17 @@ class Game:
         self.question.add_answer( message['parameters'],message['name'])
         print( self.question.answers ) # TODO: rm debug print
         return True
+    
+    def handle_screen(self, message: dict) ->str:
+        """Pass message parameters to the correct function, and handle return from screen ws_id.
+
+        Args:
+            message (dict): decoded json of message.
+        
+        Returns:
+            string: Response to send client.
+        """
+        pass # TODO
 
     def handle_message(self, message: dict, ws_id: UUID) -> str:
         """Pass message parameters to the correct function, and handle return.
@@ -186,18 +205,30 @@ class Game:
             string: Response to send client.
         """
         print(ws_id)
+        if ws_id == self.screen_id:
+            self.handle_screen(message)
+
         # Validate code
         if not self.check_code(message['code']):
             return {"response":"Invalid Code"}
         
-        # Does not require authentication
         action = message['action']
+
+        action = message['action']
+        if action == "start":
+            pass #TODO
+        
+        # Does not require authentication
         if action == "check code":
             return {"response":"Success"}
         if action == 'join':
             if (self.join(message['name'], ws_id)):
                 return {"response":"Success"}
             return {"response":"Invalid Name"}
+        
+        # Requires game start
+        if not self.in_progress:
+            return {"response": "Invalid Action"}
         
         # Requires authentication
         if not self.auth_player(message['name'],ws_id):
