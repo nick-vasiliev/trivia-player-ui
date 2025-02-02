@@ -5,6 +5,7 @@ game = Game() # returns a game code ABCD
 game.check_code("ABCD") # from player A
 game.join("A")
 """
+from uuid import UUID
 
 class Player:
     """Player of a trivia game.
@@ -12,8 +13,9 @@ class Player:
     Attributes:
         score (int): Their score in the game.
         name (str): What the player is called.
+        ws_id (UUID): Websocket the player is sent from. # TODO: when a ws is closed, handle this and allow for them to reconnect
     """
-    def __init__(self, name: str):
+    def __init__(self, name: str, ws_id: UUID):
         """Initializes them a player with their name.
         
         Args:
@@ -21,6 +23,7 @@ class Player:
         """
         self.score = 0
         self.name = name
+        self.ws_id = ws_id
 
     def __repr__(self):
         """Represent Player as <name>: <score>"""
@@ -103,20 +106,34 @@ class Game:
         self.players = []
         self.question = None
     
-    def has_player(self, player: Player):
-        """Check if Game has this player
+    def find_player(self, name: str) -> Player:
+        """Get player with this name if they exist.
 
         Args:
-            player (Player): Player to check.
+            name (str): Player name to check.
         
         Returns:
-            bool: Does this Player exist in the Game?
+            Player: Player with name, or None if not found.
         """
-        print("aaaa:",player, self.players)
         for existing_player in self.players:
-            if existing_player == player:
-                return True
+            if existing_player.name == name:
+                return existing_player
+        return None # not found
+    
+    def auth_player(self, name: str, ws_id: UUID):
+        """Confirm a player exists and name matches their ws_id.
+
+        Args:
+            name (str): Name to check.
+            ws_id (UUID): UUID to confirm player against.
+        """
+        existing_player = self.find_player(name)
+        if existing_player is None:
+            return False
+        if ws_id == existing_player.ws_id:
+            return True
         return False
+        
     
     def check_code(self, check_code:str) -> bool:
         """Check if the room code is valid for this Game.
@@ -128,7 +145,7 @@ class Game:
         """
         return check_code == self.code
 
-    def join(self, name: str) -> bool:
+    def join(self, name: str, ws_id: UUID) -> bool:
         """Adds a player to the game.
 
         Args:
@@ -137,9 +154,9 @@ class Game:
         Returns:
             bool: If player was added successfully.
         """
-        player = Player(name)
-        if self.has_player(player):
+        if self.find_player(name) is not None:
             return False
+        player = Player(name, ws_id)
         self.players.append(player)
         return True
     
@@ -158,28 +175,37 @@ class Game:
         print( self.question.answers ) # TODO: rm debug print
         return True
 
-    def handle_message(self, message: dict) -> str:
+    def handle_message(self, message: dict, ws_id: UUID) -> str:
         """Pass message parameters to the correct function, and handle return.
 
         Args:
             message (dict): decoded json of message.
+            ws_id (UUID): unique id of websocket sending it.
         
         Returns:
             string: Response to send client.
         """
+        print(ws_id)
         # Validate code
         if not self.check_code(message['code']):
             return {"response":"Invalid Code"}
         
+        # Does not require authentication
         action = message['action']
         if action == "check code":
             return {"response":"Success"}
         if action == 'join':
-            if (self.join(message['name'])):
+            if (self.join(message['name'], ws_id)):
                 return {"response":"Success"}
             return {"response":"Invalid Name"}
+        
+        # Requires authentication
+        if not self.auth_player(message['name'],ws_id):
+            return {"response":"Unauthorized"}
         if action == "answer":
             if not self.answer(message):
                 return {"response":"Invalid Question Id"}
             return {"response":"Success"}
+        
+        # Not found
         return {"response":"Invalid Action"}
