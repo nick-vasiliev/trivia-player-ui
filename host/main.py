@@ -9,7 +9,7 @@ async def handle_conn(websocket): # TODO: authentication - certificates? to auth
     async for message in websocket:
         try:
             message_dict = json.loads(message)
-            game.handle_message(message_dict)
+            print(game.handle_message(message_dict))
         except ValueError:
             print("Error decoding json")
             continue
