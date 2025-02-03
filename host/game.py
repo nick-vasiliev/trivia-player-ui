@@ -6,6 +6,7 @@ game.check_code("ABCD") # from player A
 game.join("A")
 """
 from uuid import UUID
+from question_database import QuestionDatabase
 
 class Player:
     """Player of a trivia game.
@@ -48,21 +49,25 @@ class Question:
     Attributes:
         id (int): unique identifier for the question, to ensure it does not recieve and answer for a different question.
         handler (callable): function to call to handle the result of the question.
-        params (dict): python dict representation of params sent to player.
+        player_params (dict): python dict representation of params sent to player.
         answers (dict[]): a list of answers from Player(s) to be marked by handler.
+        handler_params (dict): params to pass the handler (e.g. correct answer)
     """
-    def __init__(self, id: int, handler: callable, params: dict):
+    def __init__(self, id: int, handler: callable, player_params: dict):
         """Initializes a Question.
         
         Args:
             id (int): Identifier for the Question, should be unique.
             handler (callable): function to mark answers.
-            params: params to give the Player(s).
+            player_params (dict): params to give the Player(s).
+            answers (dict[]): List of answers given by Player(s).
+            handler_params (dict): params to pass the handler
         """
         self.id = id
         self.handler = handler 
-        self.params = params
+        self.player_params = player_params
         self.answers = {}
+        self.handler_params = {}
     
     def add_answer(self, answer: dict, player: str) -> None:
         """Add an answer to be marked. 
@@ -79,11 +84,14 @@ class Game:
     """A Game of trivia.
 
     Attributes:
-        in_progress (bool): Is the game currently running?
+        screen_id (UUID): ws_id of the screen displaying questions.
         code (str): Identifier for the room.
+        in_progress (bool): Is the game currently running?
         players (Player[]): Player(s) in the game.
         question (Question): Current question being played.
-        screen_id (UUID): ws_id of the screen displaying questions.
+        question_n (int): Question number game is on.
+        question_db (QuestionDatabase): TODO: this will be dynamodb
+        question_timer (int): seconds to wait before moving on from question
     """
     def __init__(self, code: str, screen_id: UUID):
         """Initialize a Game.
@@ -98,6 +106,9 @@ class Game:
         self.in_progress = False
         self.players = []
         self.question = None
+        self.question_n = 1
+        self.question_db = QuestionDatabase()
+        self.question_timer = 10
     
     def find_player(self, name: str) -> Player:
         """Get Player with this name if they exist.
@@ -189,24 +200,22 @@ class Game:
         Returns:
             string: Response to send client.
         """
-        print(ws_id)
         if ws_id == self.screen_id:
             self.handle_screen(message)
 
         # Validate code
         if not self.check_code(message['code']):
             return {"response":"Invalid Code"}
-        
         action = message['action']
-
-        action = message['action']
-        if action == "start":
-            pass #TODO
-        
-        # Does not require authentication
         if action == "check code":
             return {"response":"Success"}
-        if action == 'join':
+
+        if action == "start": # load question and set in progress true
+            self.question = self.question_db.get_question(self.question_n)
+            self.in_progress = True
+            return {"response":"Success"}
+
+        if action == 'join': # Check name and add player
             if (self.join(message['name'], ws_id)):
                 return {"response":"Success"}
             return {"response":"Invalid Name"}
@@ -215,10 +224,10 @@ class Game:
         if not self.in_progress:
             return {"response": "Invalid Action"}
         
-        # Requires authentication
+        # Requires being player in game
         if not self.auth_player(message['name'],ws_id):
             return {"response":"Unauthorized"}
-        if action == "answer":
+        if action == "answer": # Add answer
             if not self.answer(message):
                 return {"response":"Invalid Question Id"}
             return {"response":"Success"}

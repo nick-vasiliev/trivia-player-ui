@@ -6,7 +6,9 @@ from game import Game
 game = Game("NICK",123)
     
 async def run_game():
-    print("Started")
+    while not game.in_progress:
+        await asyncio.sleep(1)
+    print("Game is started!")
 
 async def handle_conn(websocket): # TODO: authentication - certificates? to authenticate different connections. For now, assume trust
     async for message in websocket: # websocket has an id
