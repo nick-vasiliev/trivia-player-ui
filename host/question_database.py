@@ -1,6 +1,6 @@
 """This module exists to provide questions until I connect to dynamodb.
 """
-from json import dumps as json_parse
+import json
 
 class QuestionDatabase:
     """Object to provide quesstions as though it was a noSQL database.
@@ -21,5 +21,5 @@ class QuestionDatabase:
             return None
         for question in self.questions:
             if question['question_id'] == id:
-                return json_parse(question)
+                return json.dumps(question)
         return None

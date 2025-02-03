@@ -6,7 +6,7 @@ game.check_code("ABCD") # from player A
 game.join("A")
 """
 from uuid import UUID
-from question_database import QuestionDatabase
+import question_database
 
 class Player:
     """Player of a trivia game.
@@ -107,7 +107,7 @@ class Game:
         self.players = []
         self.question = None
         self.question_n = 1
-        self.question_db = QuestionDatabase()
+        self.question_db = question_database.QuestionDatabase()
         self.question_timer = 10
     
     def find_player(self, name: str) -> Player:
@@ -234,3 +234,4 @@ class Game:
         
         # Not found
         return {"response":"Invalid Action"}
+        
