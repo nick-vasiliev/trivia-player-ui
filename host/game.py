@@ -5,7 +5,7 @@ game = Game() # returns a game code ABCD
 game.check_code("ABCD") # from player A
 game.join("A")
 """
-from uuid import UUID
+import uuid
 import question_database
 
 class Player:
@@ -14,9 +14,9 @@ class Player:
     Attributes:
         score (int): Their score in the game.
         name (str): What the player is called.
-        ws_id (UUID): Websocket the player is sent from. # TODO: when a ws is closed, handle this and allow for them to reconnect
+        ws_id (uuid.UUID): Websocket the player is sent from. # TODO: when a ws is closed, handle this and allow for them to reconnect
     """
-    def __init__(self, name: str, ws_id: UUID):
+    def __init__(self, name: str, ws_id: uuid.UUID):
         """Initializes them a player with their name.
         
         Args:
@@ -84,7 +84,7 @@ class Game:
     """A Game of trivia.
 
     Attributes:
-        screen_id (UUID): ws_id of the screen displaying questions.
+        screen_id (uuid.UUID): ws_id of the screen displaying questions.
         code (str): Identifier for the room.
         in_progress (bool): Is the game currently running?
         players (Player[]): Player(s) in the game.
@@ -93,12 +93,12 @@ class Game:
         question_db (QuestionDatabase): TODO: this will be dynamodb
         question_timer (int): seconds to wait before moving on from question
     """
-    def __init__(self, code: str, screen_id: UUID):
+    def __init__(self, code: str, screen_id: uuid.UUID):
         """Initialize a Game.
         
         Args:
             code (str): code for the game.
-            screen_id (UUID): ws_id of the screen.
+            screen_id (uuid.UUID): ws_id of the screen.
         """
         self.code = code 
         self.screen_id = screen_id
@@ -124,12 +124,12 @@ class Game:
                 return existing_player
         return None # not found
     
-    def auth_player(self, name: str, ws_id: UUID):
+    def auth_player(self, name: str, ws_id: uuid.UUID):
         """Confirm a player exists and name matches their ws_id.
 
         Args:
             name (str): Name to check.
-            ws_id (UUID): UUID to confirm player against.
+            ws_id (uuid.UUID): UUID to confirm player against.
         """
         existing_player = self.find_player(name)
         if existing_player is None:
@@ -149,7 +149,7 @@ class Game:
         """
         return check_code == self.code
 
-    def join(self, name: str, ws_id: UUID) -> bool:
+    def join(self, name: str, ws_id: uuid.UUID) -> bool:
         """Adds a player to the game.
 
         Args:
@@ -190,7 +190,7 @@ class Game:
         """
         pass # TODO
 
-    def handle_message(self, message: dict, ws_id: UUID) -> str:
+    def handle_message(self, message: dict, ws_id: uuid.UUID) -> str:
         """Pass message parameters to the correct function, and handle return.
 
         Args:
