@@ -7,6 +7,7 @@ game.join("A")
 """
 import uuid
 import question_database
+import secrets
 
 class Player:
     """Player of a trivia game.
@@ -87,6 +88,7 @@ class Game:
         screen_id (uuid.UUID): ws_id of the screen displaying questions.
         code (str): Identifier for the room.
         in_progress (bool): Is the game currently running?
+        hash_key (bytes): Random bytes used to encrypt player name for authentication.
         players (Player[]): Player(s) in the game.
         question (Question): Current question being played.
         question_n (int): Question number game is on.
@@ -104,6 +106,7 @@ class Game:
         self.screen_id = screen_id
 
         self.in_progress = False
+        self.hash_key = secrets.token_bytes(32)
         self.players = []
         self.question = None
         self.question_n = 1
@@ -149,20 +152,22 @@ class Game:
         """
         return check_code == self.code
 
-    def join(self, name: str, ws_id: uuid.UUID) -> bool:
+    def join(self, name: str, ws_id: uuid.UUID) -> int:
         """Adds a player to the game.
 
         Args:
             name (str): name of Player to add.
         
         Returns:
-            bool: If player was added successfully.
+            bytes: On success return name hashed with hash_key, otherwise None.
         """
         if self.find_player(name) is not None:
-            return False
+            return None
         player = Player(name, ws_id)
         self.players.append(player)
-        return True
+
+        player_auth_token = int(hash( bytes(name,"UTF-8") + self.hash_key ))
+        return player_auth_token
     
     def answer(self, message: dict) -> bool:
         """Take answer from a Player and store it in current Question's answers.
@@ -216,8 +221,9 @@ class Game:
             return {"response":"Success"}
 
         if action == 'join': # Check name and add player
-            if (self.join(message['name'], ws_id)):
-                return {"response":"Success"}
+            player_token = self.join(message['name'], ws_id)
+            if player_token is not None:
+                return {"response":"Success","token":player_token}
             return {"response":"Invalid Name"}
         
         # Requires game start
