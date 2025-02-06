@@ -20,7 +20,7 @@ async def handle_conn(websocket): # TODO: authentication - certificates? to auth
             message_respond = {"response":"Error decoding json"} # logging
         finally:
             await websocket.send(json.dumps(message_respond))
-            print(message_respond)
+            print(f"{message}\n\t{message_respond}")
 async def main():
     async with server.serve(handle_conn, "0.0.0.0", 8765) as game_server:
         game_task = asyncio.create_task(run(game_server))
