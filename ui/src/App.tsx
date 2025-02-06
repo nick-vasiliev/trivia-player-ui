@@ -1,6 +1,6 @@
 import './App.css';
 import { ChoiceLayout } from './components/ChoiceLayout';
-
+import { useCookies } from 'react-cookie';
 
 const socket = new WebSocket("ws://192.168.0.13:8765")
 socket.addEventListener("open", event => {
@@ -11,11 +11,12 @@ socket.addEventListener("message", event => {
   console.log("Message from server ", event.data)
 });
 
-function sendChoice(id) {
+function sendChoice(id): void {
   socket.send(id.toString());
 }
 
 function App() {
+  const [cookies, setCookie, removeCookie] = useCookies([]);
   const q_choices = [
     {id:0,text:"AAAAA"},
     {id:1,text:"CCCCC"},
