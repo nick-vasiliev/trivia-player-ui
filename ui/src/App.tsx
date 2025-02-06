@@ -1,7 +1,14 @@
 import { useEffect, useRef } from 'react';
 import './App.css';
 import { ChoiceLayout } from './components/ChoiceLayout';
-import { useCookies } from 'react-cookie';
+import { CodeEntry } from './components/CodeEntry.tsx';
+import { useCookies, withCookies } from 'react-cookie';
+
+interface Message {
+  action: string;
+  parameters?: object; // REMINDER, THIS NEEDS TO CHANGE AND BE FLATTENED INTO SEVERAL PARAMS (task for tomorrow, goodnight!)
+  code: string;
+}
 
 function App() {
   const [cookies, setCookie, removeCookie] = useCookies([]);
@@ -22,10 +29,15 @@ function App() {
     return () => socket.close();
   },[]);
 
-  function sendChoice(id: int): void {
+  function send(msg: Message): void {
     if (!ws.current) console.log("WS not open!"); // TODO: handle this with a UI notif!
-    else ws.current.send(id.toString());
+    else ws.current.send(JSON.stringify(msg));
   };
+
+  function sendCode(code: string): void {
+    let msg: Message = {action:"check code", "code":code};
+    send(msg);
+  }
 
   const q_choices = [
     {id:0,text:"AAAAA"},
@@ -36,7 +48,7 @@ function App() {
   ]
   return (
     <div className="App">
-      <ChoiceLayout choices={q_choices} question="What does the fox say?" buttonClick={sendChoice} />
+      <CodeEntry onSubmit={sendCode} />
     </div>
   );
 }
