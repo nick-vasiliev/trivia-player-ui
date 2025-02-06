@@ -16,8 +16,8 @@ async def handle_conn(websocket): # TODO: authentication - certificates? to auth
         try:
             message_dict = json.loads(message)
             message_respond = running_game.handle_message(message_dict, websocket.id)
-        except ValueError:
-            message_respond = {"response":"Error decoding json"}
+        except:
+            message_respond = {"response":"Error decoding json"} # logging
         finally:
             await websocket.send(json.dumps(message_respond))
             print(message_respond)
