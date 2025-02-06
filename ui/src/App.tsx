@@ -1,11 +1,6 @@
 import './App.css';
 import { ChoiceLayout } from './components/ChoiceLayout';
 
-async function getQuestion() {
-  const q = await fetch('http://localhost:9002/question');
-  const response = q.json();
-  console.log(response);
-};
 
 const socket = new WebSocket("ws://192.168.0.13:8765")
 socket.addEventListener("open", event => {
