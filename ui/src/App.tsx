@@ -42,11 +42,12 @@ function App() {
     send(msg);
   }
 
-  return (
-    <div className="App">
-      <h1>App</h1>
-      <EnterRoom sendCode={sendCode} />
-    </div>
+  return ( // TODO: add a default '/' layout route for styles
+    <BrowserRouter>
+      <Routes> 
+        <Route path = "/join" element={<EnterRoom />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

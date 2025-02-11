@@ -6,5 +6,5 @@ export function EnterRoom({sendCode}: {(msg: string)}) {
             <h1>EnterRoom</h1>
             <CodeEntry onSubmit={sendCode} />
         </div>
-    )
-};
+    );
+}; 
