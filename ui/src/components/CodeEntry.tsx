@@ -5,9 +5,10 @@ export function CodeEntry({onSubmit}: {(code: string)}) {
 
 
     return (
-        <div className="codeEntry">
-        <input className="codeEntryInput" type="text" ref={code} />
-        <button className="codeEntryButton" onClick={() => onSubmit(code.current?.value)}>Go!</button>
+        <div className="CodeEntry">
+            <h1>CodeEntry</h1>
+            <input className="codeEntryInput" type="text" ref={code} />
+            <button className="codeEntryButton" onClick={() => onSubmit(code.current?.value)}>Go!</button>
         </div>
     );
 }

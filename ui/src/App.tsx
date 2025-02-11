@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import './App.css';
 import { ChoiceLayout } from './components/ChoiceLayout';
-import { CodeEntry } from './components/CodeEntry.tsx';
 import { useCookies, withCookies } from 'react-cookie';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+
+import { EnterRoom } from './pages/EnterRoom.tsx';
 
 interface Message {
   action: string;
@@ -43,7 +44,8 @@ function App() {
 
   return (
     <div className="App">
-      <CodeEntry onSubmit={sendCode} />
+      <h1>App</h1>
+      <EnterRoom sendCode={sendCode} />
     </div>
   );
 }
