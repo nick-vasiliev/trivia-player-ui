@@ -1,4 +1,4 @@
-Work in Progress!
+Not given up on this, just taking a break while working on other things. WIP!
 # Trivia
 This repo contains 3 applications/modules that are part of a trivia game.
 
